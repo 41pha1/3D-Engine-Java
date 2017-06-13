@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import models.RawModel;
 import models.TexturedModel;
+
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
 import renderEngine.ModelData;
@@ -86,13 +88,13 @@ public class WorldLoader
 		player=new Player(texturedPlayerModel, new Vector3f(0, 0, 0), 0,0,0,1f);
 		entities.add(player);
 		
-		data=OBJFileLoader.loadOBJ("fract-map");
+		data=OBJFileLoader.loadOBJ("triangle");
 		model=loader.loadToVAO(data.getVertices(), data.getTextureCoords(), data.getNormals(), data.getIndices());
 		texture=new ModelTexture(loader.loadTexture("greyTerrain"));
 		texture.setCellShading(false);
 		texture.setRenderBack(true);
 		TexturedModel caveModel=new TexturedModel(model, texture);
-		entities.add(new Entity(caveModel, new Vector3f(50,0,0),-45,180,0,5));	
+		entities.add(new Entity(caveModel, new Vector3f(0,0,0),-45,180,0,50));	
 		
 		
 //		TerrainTexture backgroundTexture=new TerrainTexture(loader.loadTexture("greenTerrain"));
@@ -144,5 +146,8 @@ public class WorldLoader
 //			float y=terrain.getHeightOfTerrain(x, z);
 //			entities.add(new Entity(stoneModel, new Vector3f(x,y,z),0,random.nextFloat()*360,0,(random.nextFloat()*2)+1));
 //		}
+		
+		GuiTexture collision = new GuiTexture(loader.loadTexture("greenTerrain"),new Vector2f(0.5f,0.5f),new Vector2f(0.5f,0.5f));
+		guis.add(collision);
 	}
 }

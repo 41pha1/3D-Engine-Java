@@ -53,7 +53,7 @@ public class MainGameLoop
 		while(!Display.isCloseRequested())
 		{
 			worldLoader.player.move(worldLoader.lights.get(0));
-			camera.move();
+			camera.move(worldLoader.player);
 //			picker.update();
 //			Vector3f terrainPoint=picker.getCurrentTerrainPoint();
 //			if(terrainPoint!=null)
@@ -74,12 +74,10 @@ public class MainGameLoop
 //			renderer.renderSceneToFBO(worldLoader.entities, worldLoader.terrains, worldLoader.lights, camera, new Vector4f(0, -1, 0, worldLoader.water.getHeight()+1f));
 //			
 //			fbos.unbindCurrentFrameBuffer();
-//			
 			
-			renderer.renderScene(worldLoader.entities, worldLoader.terrains, worldLoader.lights, camera, new Vector4f(0,1,0,1000000));
+			renderer.renderScene(worldLoader.entities, worldLoader.terrains, worldLoader.lights, camera, new Vector4f(0,1,0,1000000));		
 //			waterRenderer.render(worldLoader.waterTiles, camera, worldLoader.getLights().get(1));
-//			guiRenderer.render(worldLoader.guis);
-			
+			guiRenderer.render(worldLoader.guis);		
 			DisplayManager.updateDisplay();
 		}
 		fbos.cleanUp();

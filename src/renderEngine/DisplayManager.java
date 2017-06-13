@@ -2,6 +2,7 @@ package renderEngine;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -18,7 +19,8 @@ public class DisplayManager {
 	private static float delta;
 	private static byte fpsUpdate=0;
 	
-	public static void createDisplay(){		
+	public static void createDisplay()
+	{		
 		ContextAttribs attribs = new ContextAttribs(3,2)
 		.withForwardCompatible(true)
 		.withProfileCore(true);
@@ -34,6 +36,14 @@ public class DisplayManager {
 		
 		GL11.glViewport(0,0, WIDTH, HEIGHT);
 		lastFrameTime=getCurrentTime();
+		try
+		{
+			Mouse.create();
+		} catch (LWJGLException e)
+		{
+			e.printStackTrace();
+		}
+		Mouse.setGrabbed(true);
 	}
 	
 	public static void updateDisplay(){
@@ -58,8 +68,9 @@ public class DisplayManager {
 	{
 		return Sys.getTime()*1000/Sys.getTimerResolution();
 	}
-	public static void closeDisplay(){
-		
+	public static void closeDisplay()
+	{
+		Mouse.destroy();
 		Display.destroy();
 	}
 

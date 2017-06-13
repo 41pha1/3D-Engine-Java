@@ -144,7 +144,7 @@ public class Maths
 //	        angles += Math.acos(Vector3f.dot(v1, v2));
 //	        angles += Math.acos(Vector3f.dot(v2, v3));
 //	        angles += Math.acos(Vector3f.dot(v3, v1));
-//	        return (Math.abs(angles - 2*Math.PI) <= 0.005);
+//	        return (Math.abs(angles  - 2*Math.PI) <= 0.005);
 	}
 	public static Matrix4f createViewMatrix(Camera camera) {
 		Matrix4f viewMatrix = new Matrix4f();

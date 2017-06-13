@@ -1,10 +1,8 @@
 package entities;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
-
-import terrains.Terrain;
 
 public class Camera {
 	
@@ -14,10 +12,14 @@ public class Camera {
 	
 	private Vector3f position = new Vector3f(0,5,0);
 	private float pitch = 10;
-	private float yaw ;
+	private static float yaw ;
 	private float roll;
 	private Player player;
 	
+	public void setYaw(float yaw)
+	{
+		this.yaw = yaw;
+	}
 	public Camera(Player player)
 	{
 		this.player=player;
@@ -39,25 +41,30 @@ public class Camera {
 		position.x=player.getPosition().x-offsetX;
 		position.z=player.getPosition().z-offsetZ;
 	}
-	public void move()
+	public void move(Player player)
 	{
-		zoom=Normalzoom;
-		calculateZoom();
-		calculateAngles();
-		float yDistance=calculateYDistance();
-		float xzDistance=calculateXZDistance();
-		calculateCameraPosition(yDistance, xzDistance);
-		this.yaw=180-(player.getRotY()+angleAroundPlayer);
-		for(int i=0; i<10; i++)
-		{
-			if(position.getY()-2<0)
-			{
-				zoom--;
-				yDistance=calculateYDistance();
-				xzDistance=calculateXZDistance();
-				calculateCameraPosition(yDistance, xzDistance);
-			}
-		}
+		yaw=player.getYaw();
+		pitch=player.getPitch();
+		position.y=player.getPosition().y+30;
+		position.x=player.getPosition().x;
+		position.z=player.getPosition().z;
+//		zoom=Normalzoom;
+//		calculateZoom();
+//		calculateAngles();
+//		float yDistance=calculateYDistance();
+//		float xzDistance=calculateXZDistance();
+//		calculateCameraPosition(yDistance, xzDistance);
+//		this.yaw=180-(player.getRotY()+angleAroundPlayer);
+//		for(int i=0; i<10; i++)
+//		{
+//			if(position.getY()-2<0)
+//			{
+//				zoom--;
+//				yDistance=calculateYDistance();
+//				xzDistance=calculateXZDistance();
+//				calculateCameraPosition(yDistance, xzDistance);
+//			}
+//		}
 	}
 
 	public Vector3f getPosition() {
@@ -68,7 +75,7 @@ public class Camera {
 		return pitch;
 	}
 
-	public float getYaw() {
+	public static float getYaw() {
 		return yaw;
 	}
 
@@ -81,18 +88,6 @@ public class Camera {
 		Normalzoom -= zoomLevel;
 		if(Normalzoom<30)Normalzoom=30;
 		if(Normalzoom>200)Normalzoom=200;
-	}
-	public void calculateAngles()
-	{
-		if(Mouse.isButtonDown(1))
-		{
-			float pitchChange=Mouse.getDY()*0.1f;
-			float angleAroundPlayerChange=Mouse.getDX()*0.3f;
-			pitch-=pitchChange;
-			if (pitch<1f)pitch =1f;
-			if (pitch>90f)pitch =90f;
-			angleAroundPlayer-=angleAroundPlayerChange;
-		}
 	}
 	public void invertPitch()
 	{
