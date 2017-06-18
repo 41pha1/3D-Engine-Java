@@ -10,6 +10,18 @@ public class Plane
 	public boolean isFrontFacingTo;
 	public double signedDistanceTo;
 	
+	public Plane(Vector3f origin, Vector3f normal)
+	{
+		this.normal=normal;
+		this.origin=origin;
+		equation = new float[4];
+		equation[0]=normal.x;
+		equation[1]=normal.y;
+		equation[2]=normal.z;
+		equation[3]=(normal.x*origin.x+normal.y*origin.y+normal.z*origin.z);
+
+	}
+	
 	public Plane(Vector3f p1, Vector3f p2, Vector3f p3)
 	{
 		equation = new float[4];

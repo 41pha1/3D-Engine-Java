@@ -7,6 +7,8 @@ import models.TexturedModel;
 
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+
+import renderEngine.DrawInWorld;
 import renderEngine.Loader;
 import renderEngine.ModelData;
 import renderEngine.OBJFileLoader;
@@ -79,13 +81,14 @@ public class WorldLoader
 	
 	public void loadWorld()
 	{
+		DrawInWorld.loadPixels();
 		ModelData data= OBJFileLoader.loadOBJ("player");
 		RawModel model = loader.loadToVAO(data.getVertices(), data.getTextureCoords(), data.getNormals(), data.getIndices());
 		ModelTexture texture=new ModelTexture(loader.loadTexture("player"));
 		texture.setReflectivity(0);
 		texture.setShineDamper(10);
 		TexturedModel texturedPlayerModel = new TexturedModel(model,texture);
-		player=new Player(texturedPlayerModel, new Vector3f(0, 0, 0), 0,0,0,1f);
+		player=new Player(texturedPlayerModel, new Vector3f(50, 0, 0), 0,0,0,1f);
 		entities.add(player);
 		
 		data=OBJFileLoader.loadOBJ("triangle");
@@ -94,7 +97,7 @@ public class WorldLoader
 		texture.setCellShading(false);
 		texture.setRenderBack(true);
 		TexturedModel caveModel=new TexturedModel(model, texture);
-		entities.add(new Entity(caveModel, new Vector3f(0,0,0),-45,180,0,50));	
+		entities.add(new Entity(caveModel, new Vector3f(0,0,0),20,180,0,50f));	
 		
 		
 //		TerrainTexture backgroundTexture=new TerrainTexture(loader.loadTexture("greenTerrain"));

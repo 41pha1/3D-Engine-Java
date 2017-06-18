@@ -48,23 +48,21 @@ public class Camera {
 		position.y=player.getPosition().y+30;
 		position.x=player.getPosition().x;
 		position.z=player.getPosition().z;
-//		zoom=Normalzoom;
-//		calculateZoom();
-//		calculateAngles();
-//		float yDistance=calculateYDistance();
-//		float xzDistance=calculateXZDistance();
-//		calculateCameraPosition(yDistance, xzDistance);
-//		this.yaw=180-(player.getRotY()+angleAroundPlayer);
-//		for(int i=0; i<10; i++)
-//		{
-//			if(position.getY()-2<0)
-//			{
-//				zoom--;
-//				yDistance=calculateYDistance();
-//				xzDistance=calculateXZDistance();
-//				calculateCameraPosition(yDistance, xzDistance);
-//			}
-//		}
+		zoom=Normalzoom;
+		calculateZoom();
+		float yDistance=calculateYDistance();
+		float xzDistance=calculateXZDistance();
+		calculateCameraPosition(yDistance, xzDistance);
+		for(int i=0; i<10; i++)
+		{
+			if(position.getY()-2<0)
+			{
+				zoom--;
+				yDistance=calculateYDistance();
+				xzDistance=calculateXZDistance();
+				calculateCameraPosition(yDistance, xzDistance);
+			}
+		}
 	}
 
 	public Vector3f getPosition() {

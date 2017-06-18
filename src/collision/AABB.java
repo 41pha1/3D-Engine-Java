@@ -89,5 +89,11 @@ public class AABB
 			if(transformedVertices[i]<zmin) zmin=transformedVertices[i];
 			i++;
 		}
+		xmax+=5;
+		ymax+=5;
+		zmax+=5;
+		xmin-=5;
+		ymin-=5;
+		zmin-=5;
 	}
 }

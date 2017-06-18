@@ -44,6 +44,8 @@ public class MasterRenderer {
 	
 	private StaticShader shader = new StaticShader();
 	private EntityRenderer renderer;
+	private DrawInWorld  DIW;
+	
 	
 	private TerrainRenderer terrainRenderer;
 	private TerrainShader terrainShader = new TerrainShader();
@@ -59,6 +61,7 @@ public class MasterRenderer {
 		enableCulling();
 		createProjectionMatrix();
 		renderer = new EntityRenderer(shader,projectionMatrix);
+		DIW = new DrawInWorld(shader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader,projectionMatrix);
 		skyboxRenderer = new skyboxRenderer(loader, projectionMatrix);
 	}
@@ -134,6 +137,7 @@ public class MasterRenderer {
 		shader.loadLights(lights);
 		shader.loadViewMatrix(camera);
 		renderer.render(entities);
+		DIW.render();
 		shader.stop();
 		terrainShader.start();
 		terrainShader.loadClipPlane(clipPlane);

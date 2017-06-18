@@ -9,6 +9,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 
 import collision.BroadPhase;
+import collision.Collision;
 import collision.NarrowPhase;
 
 import engineTester.MainGameLoop;
@@ -21,10 +22,11 @@ public class Player extends Entity
 {
 	private BroadPhase bpCollision;
 	private NarrowPhase npCollision;
+	private Collision collision;
 	private float currentSpeed=0;
 	private static final float GRAVITY=-50;
 	private static final float JUMP_POWER=20;
-	private static final float SPEED=100;
+	private static final float SPEED=10;
 	private float accelerationX;
 	private float accelerationY; 
 	private static float velocityY=0;
@@ -36,17 +38,14 @@ public class Player extends Entity
 	{
 		super(model, position, rotX, rotY, rotZ, scale);
 		bpCollision=new BroadPhase();
-		npCollision=new NarrowPhase(new Vector3f(
-				this.getAabb().getXmax()-this.getAabb().getXmin(),
-				this.getAabb().getYmax()-this.getAabb().getYmin(),
-				this.getAabb().getZmax()-this.getAabb().getZmin()));
+		npCollision=new NarrowPhase(new Vector3f(2,10,2));
+		collision=new Collision(bpCollision,npCollision,this, WorldLoader.entities);
 		possibleCollision = new ArrayList<Integer>();
 	}
 	
 	public void move(Light light)
 	{
 		updateAABB();
-		possibleCollision = bpCollision.checkBroadPhaseCollision(this, WorldLoader.entities);
 		calculateAngles();
 		checkKeyboardInputs();
 		super.setRotY(-Camera.getYaw()+180);
@@ -56,21 +55,9 @@ public class Player extends Entity
 		distance=accelerationY*DisplayManager.getFrameTimeSeconds();
 		dx+=(float) (distance*Math.sin(Math.toRadians(super.getRotY()+90)));
 		dz+=(float) (distance*Math.cos(Math.toRadians(super.getRotY()+90)));
-		super.increasePosition(dx, 0, dz);
-		velocityY+=GRAVITY*DisplayManager.getFrameTimeSeconds();
-		possibleCollision.add(1);
-		if(possibleCollision.size()>0 && (dx !=0 || dz !=0))
-		{
-			for(int i = 0; i<possibleCollision.size();i++)
-			{
-				npCollision.checkNarrowPhaseCollision(
-						WorldLoader.getEntities().get(possibleCollision.get(i))
-						.getAabb().getTransformationMatrix(), 
-						WorldLoader.getEntities().get(possibleCollision.get(i)), 
-						this.getPosition(), new Vector3f(dx,0,dz));
-			}
-		}
-		super.increasePosition(0, velocityY * DisplayManager.getFrameTimeSeconds(), 0);
+//		velocityY+=GRAVITY*DisplayManager.getFrameTimeSeconds();
+		this.setPosition(collision.updatePosition(this.getPosition(), new Vector3f(dx, 0, dz), new Vector3f(0,0,0)));
+		
 		float terrainHeight=0;
 		if(super.getPosition().y<=terrainHeight)
 		{

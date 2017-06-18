@@ -1,36 +1,26 @@
 package collision;
 
-import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+
+import renderEngine.DrawInWorld;
 import toolbox.Maths;
 import entities.Entity;
 
 public class NarrowPhase
 {
-	public CollisionPackage getColPack()
+	private Vector3f eRadius;
+	public Vector3f geteRadius()
 	{
-		return colPack;
+		return eRadius;
 	}
-	public static Matrix3f getMatrix()
+	public void seteRadius(Vector3f eRadius)
 	{
-		return matrix;
+		this.eRadius = eRadius;
 	}
-	private CollisionPackage colPack;
-	private static Matrix3f matrix;
-	public NarrowPhase(Vector3f player)
+	public NarrowPhase(Vector3f eRadius)
 	{
-		this.colPack=new CollisionPackage();
-		matrix = new Matrix3f();
-		matrix.m01=0;
-		matrix.m02=0;
-		matrix.m10=0;
-		matrix.m12=0;
-		matrix.m20=0;
-		matrix.m21=0;
-		matrix.m00=1/2f;
-		matrix.m11=1/10f;
-		matrix.m22=1/2f;
+		this.eRadius = new Vector3f(eRadius.x, eRadius.y, eRadius.z);
 	}
 	public Vector3f translateToWorldSpace(Vector3f vector, Matrix4f transformationMatrix)
 	{
@@ -42,19 +32,12 @@ public class NarrowPhase
 		float z2 = (transformationMatrix.m20*x1) + (transformationMatrix.m21*y1) + (transformationMatrix.m22*z1) + (transformationMatrix.m32);
 		return new Vector3f(x2,y2,z2);
 	}
-	public void checkNarrowPhaseCollision(Matrix4f transformationMatrix, Entity entity, Vector3f position, Vector3f velocity)
+	public CollisionPackage checkNarrowPhaseCollision(CollisionPackage colPack, Matrix4f transformationMatrix, Entity entity)
 	{
 		float[] vertices = entity.getModel().getRawModel().getVertices();
 		int[] indices = entity.getModel().getRawModel().getIndices();
 		for(int i = 0; i<indices.length; i++)
 		{		
-			colPack=new CollisionPackage();
-			colPack.setRadius(new Vector3f(2,10,2));
-			colPack.setR3Position(new Vector3f(position.x+2,position.y+10,position.z+2));
-			colPack.setR3Velocity(velocity);
-			colPack.setVelocity(translateToESpace(velocity));
-			colPack.setBasePoint(translateToESpace(new Vector3f(position.x+2,position.y+10,position.z+2)));
-
 			float p1, p2, p3;
 			p1 = vertices[indices[i]*3];
 			p2 = vertices[indices[i]*3+1];
@@ -72,15 +55,21 @@ public class NarrowPhase
 			Vector3f triangleCoords3  = translateToESpace(translateToWorldSpace(new Vector3f(p1,p2,p3), transformationMatrix));
 			checkTriangle(colPack, triangleCoords1, triangleCoords2, triangleCoords3);
 		}
+		if(colPack.intersectionPoint!=null)
+		colPack.intersectionPoint = translateToR3(colPack.intersectionPoint);
+		return colPack;
 	}
-	private Vector3f translateToESpace(Vector3f coords)
+	private Vector3f translateToR3(Vector3f position)
 	{
-		float p1, p2, p3;
-		p1 = (matrix.m00*coords.x); 
-		p2 = (matrix.m11*coords.y);
-		p3 = (matrix.m22*coords.z);
-//		System.out.println(p1+", "+p2+", "+p3);
-		return (new Vector3f(p1,p2,p3));
+		Vector3f R3Position = new Vector3f(position.x*eRadius.x,
+				position.y*eRadius.y, position.z*eRadius.z);
+		return R3Position;
+	}
+	private Vector3f translateToESpace(Vector3f position)
+	{
+		Vector3f eSpacePosition = new Vector3f(position.x/eRadius.x,
+				position.y/eRadius.y, position.z/eRadius.z);
+		return eSpacePosition;
 	}
 	private void checkTriangle(CollisionPackage colPack, Vector3f p1,Vector3f p2, Vector3f p3)
 	{
@@ -252,7 +241,6 @@ public class NarrowPhase
 					colPack.nearestDistance = distToCollision;
 					colPack.intersectionPoint = collisionPoint;
 					colPack.foundCollision = true;
-					System.out.println("COLLIDING: "+collisionPoint);
 				}
 			}
 //		}

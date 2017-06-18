@@ -15,6 +15,7 @@ import org.lwjgl.util.vector.Vector4f;
 import collision.BroadPhase;
 
 import renderEngine.DisplayManager;
+import renderEngine.DrawInWorld;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import renderEngine.ModelData;
